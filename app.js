@@ -1,18 +1,7 @@
 const TablePulse = (() => {
   const STORAGE_KEY = 'tablepulse.tickets.v1';
-  const ORDER_KEY = 'tablepulse.orders.v1';
   const API_URL = 'api/tickets.php';
-  const ORDER_API_URL = 'api/orders.php';
-  const statusLabels = {
-    new: 'New',
-    doing: 'Doing',
-    done: 'Done',
-    received: 'Received',
-    dry_run: 'Dry run',
-    queued_missing_credentials: 'Queued · missing credentials',
-    queued_send_failed: 'Queued · send failed',
-    sent_to_dotypos: 'Sent to Dotykačka'
-  };
+  const statusLabels = { new: 'New', doing: 'Doing', done: 'Done' };
   const typeLabels = {
     service: 'Call waiter',
     payment: 'Ask for bill',
@@ -46,14 +35,6 @@ const TablePulse = (() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(tickets));
   }
 
-  function loadLocalOrders() {
-    try { return JSON.parse(localStorage.getItem(ORDER_KEY) || '[]'); }
-    catch { return []; }
-  }
-
-  function saveLocalOrders(orders) {
-    localStorage.setItem(ORDER_KEY, JSON.stringify(orders));
-  }
 
   async function apiRequest(method = 'GET', body = null, id = null) {
     const url = id ? `${API_URL}?id=${encodeURIComponent(id)}` : API_URL;
@@ -66,16 +47,6 @@ const TablePulse = (() => {
     return response.json();
   }
 
-  async function orderApiRequest(method = 'GET', body = null, id = null) {
-    const url = id ? `${ORDER_API_URL}?id=${encodeURIComponent(id)}` : ORDER_API_URL;
-    const response = await fetch(url, {
-      method,
-      headers: { 'Content-Type': 'application/json' },
-      body: body ? JSON.stringify(body) : null
-    });
-    if (!response.ok) throw new Error(`Order API ${response.status}`);
-    return response.json();
-  }
 
   async function listTickets() {
     try {
@@ -125,26 +96,6 @@ const TablePulse = (() => {
     }
   }
 
-  async function listOrders() {
-    try {
-      const data = await orderApiRequest('GET');
-      saveLocalOrders(data.orders || []);
-      return { orders: data.orders || [], online: true };
-    } catch {
-      return { orders: loadLocalOrders(), online: false };
-    }
-  }
-
-  async function updateOrderStatus(id, status) {
-    const local = loadLocalOrders().map((order) => order.id === id ? { ...order, status, updatedAt: nowIso() } : order);
-    saveLocalOrders(local);
-    try {
-      await orderApiRequest('PATCH', { status }, id);
-      return true;
-    } catch {
-      return false;
-    }
-  }
 
   function formatTime(iso) {
     try { return new Intl.DateTimeFormat(undefined, { hour: '2-digit', minute: '2-digit' }).format(new Date(iso)); }
@@ -209,48 +160,6 @@ const TablePulse = (() => {
     return article;
   }
 
-  function renderOrder(order) {
-    const article = document.createElement('article');
-    article.className = 'ticket';
-    const items = (order.items || []).map((item) => `<li>${escapeHtml(item.qty || 1)}× ${escapeHtml(item.name)} · ${escapeHtml(money(item.price || 0))}</li>`).join('');
-    article.innerHTML = `
-      <div>
-        <h3>Table ${escapeHtml(order.table)} · ${escapeHtml(money(order.total || orderTotal(order)))}</h3>
-        ${order.note ? `<p>${escapeHtml(order.note)}</p>` : '<p>No note added</p>'}
-        <ul class="order-items">${items}</ul>
-        <div class="ticket-meta">
-          <span class="tag ${escapeHtml(statusClass(order.status || 'new'))}">${escapeHtml(statusLabels[order.status] || order.status || 'New')}</span>
-          <span class="tag">${escapeHtml(formatTime(order.createdAt || order.receivedAt))}</span>
-        </div>
-      </div>
-      <div class="ticket-actions">
-        <button class="secondary" data-status="new">New</button>
-        <button class="secondary" data-status="doing">Doing</button>
-        <button class="secondary" data-status="done">Done</button>
-      </div>
-    `;
-    article.querySelectorAll('button[data-status]').forEach((button) => {
-      button.addEventListener('click', async () => {
-        await updateOrderStatus(order.id, button.dataset.status);
-        await refreshDashboard();
-      });
-    });
-    return article;
-  }
-
-  function money(value) {
-    return `${Number(value || 0).toFixed(2)} €`;
-  }
-
-  function orderTotal(order) {
-    return (order.items || []).reduce((sum, item) => sum + Number(item.price || 0) * Number(item.qty || 1), 0);
-  }
-
-  function statusClass(status) {
-    if (['done', 'sent_to_dotypos'].includes(status)) return 'done';
-    if (['doing', 'dry_run', 'received'].includes(status)) return 'doing';
-    return 'new';
-  }
 
   function escapeHtml(value) {
     return String(value || '').replace(/[&<>'"]/g, (char) => ({
@@ -259,7 +168,7 @@ const TablePulse = (() => {
   }
 
   async function refreshDashboard() {
-    const [{ tickets, online }, { orders, online: ordersOnline }] = await Promise.all([listTickets(), listOrders()]);
+    const { tickets, online } = await listTickets();
     const filter = $('statusFilter').value;
     const visible = tickets
       .filter((ticket) => filter === 'all' || ticket.status === filter)
@@ -271,20 +180,13 @@ const TablePulse = (() => {
     $('ticketList').replaceChildren(...visible.map(renderTicket));
     $('emptyState').style.display = visible.length ? 'none' : 'block';
 
-    const visibleOrders = orders
-      .filter((order) => filter === 'all' || (order.status || 'new') === filter)
-      .sort((a, b) => String(b.createdAt || b.receivedAt || '').localeCompare(String(a.createdAt || a.receivedAt || '')));
-    $('orderSyncState').textContent = ordersOnline ? 'PHP backend online' : 'local demo';
-    $('orderSyncState').className = ordersOnline ? 'pill online' : 'pill';
-    $('orderList').replaceChildren(...visibleOrders.map(renderOrder));
-    $('orderEmptyState').style.display = visibleOrders.length ? 'none' : 'block';
   }
 
   function initDashboard() {
     $('refreshBtn').addEventListener('click', refreshDashboard);
     $('statusFilter').addEventListener('change', refreshDashboard);
     $('exportBtn').addEventListener('click', () => {
-      const blob = new Blob([JSON.stringify({ tickets: loadLocal(), orders: loadLocalOrders() }, null, 2)], { type: 'application/json' });
+      const blob = new Blob([JSON.stringify(loadLocal(), null, 2)], { type: 'application/json' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
       a.download = `tablepulse-export-${new Date().toISOString().slice(0, 10)}.json`;
