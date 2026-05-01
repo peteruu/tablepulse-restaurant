@@ -7,7 +7,7 @@ It is intentionally simple: no database, no build step, no framework. It works a
 ## What it does
 
 - Guest page for table-specific requests: service, payment, cleaning, order issue, feedback.
-- QR order page where the guest selects menu items for their mapped table.
+- QR order page where the guest selects menu items for their mapped table, including per-item notes.
 - Lightweight request dashboard for non-order requests/feedback only.
 - QR/link generator for table numbers.
 - PHP API storing tickets/orders in JSON files.
@@ -41,8 +41,15 @@ php -S localhost:8080 -t public
 Then visit:
 
 ```text
+http://localhost:8080/order.html?t=7
 http://localhost:8080/?t=7
 http://localhost:8080/dashboard.html
+```
+
+Run the backend smoke test:
+
+```bash
+node scripts/smoke-test.mjs http://localhost:8080
 ```
 
 The repo includes `public/api/tickets.php` as a tiny proxy to the real API, so the PHP built-in server works with the command above. On shared hosting, deploy the full repo and keep `data/` writable.
