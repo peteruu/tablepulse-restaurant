@@ -9,6 +9,7 @@ const TablePulseOrder = (() => {
   let menu = { categories: [], items: [] };
   let activeCategory = 'all';
   let cart = [];
+  let lastOrder = null;
 
   function tableNumber() {
     const params = new URLSearchParams(window.location.search);
@@ -25,8 +26,9 @@ const TablePulseOrder = (() => {
 
   async function json(url, options = {}) {
     const response = await fetch(url, options);
-    if (!response.ok) throw new Error(`${url} ${response.status}`);
-    return response.json();
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(data.error || data.message || `${url} ${response.status}`);
+    return data;
   }
 
   async function loadMenu() {
@@ -57,6 +59,15 @@ const TablePulseOrder = (() => {
 
   function saveCart() {
     sessionStorage.setItem(CART_KEY, JSON.stringify(cart));
+  }
+
+  function loadLocalOrders() {
+    try { return JSON.parse(localStorage.getItem(ORDER_KEY) || '[]'); }
+    catch { return []; }
+  }
+
+  function saveLocalOrder(order) {
+    localStorage.setItem(ORDER_KEY, JSON.stringify([order, ...loadLocalOrders()]));
   }
 
   function renderCategories() {
@@ -93,9 +104,9 @@ const TablePulseOrder = (() => {
   }
 
   function addItem(item) {
-    const existing = cart.find((line) => line.id === item.id);
+    const existing = cart.find((line) => line.id === item.id && (line.note || '') === '');
     if (existing) existing.qty += 1;
-    else cart.push({ ...item, qty: 1 });
+    else cart.push({ ...item, qty: 1, note: '' });
     saveCart();
     renderCart();
   }
@@ -105,17 +116,22 @@ const TablePulseOrder = (() => {
       const row = document.createElement('div');
       row.className = 'cart-line';
       row.innerHTML = `
-        <div>
+        <div class="cart-line-main">
           <strong>${escapeHtml(line.name)}</strong>
           <span>${money(line.price)} × ${line.qty}</span>
+          <label class="item-note-label">
+            Item note
+            <input class="item-note" value="${escapeHtml(line.note || '')}" placeholder="e.g. no onion" maxlength="160">
+          </label>
         </div>
         <div class="qty-controls">
-          <button class="secondary" data-action="minus">−</button>
-          <button class="secondary" data-action="plus">+</button>
+          <button class="secondary" data-action="minus" aria-label="Remove one ${escapeHtml(line.name)}">−</button>
+          <button class="secondary" data-action="plus" aria-label="Add one ${escapeHtml(line.name)}">+</button>
         </div>
       `;
-      row.querySelector('[data-action="minus"]').addEventListener('click', () => changeQty(line.id, -1));
-      row.querySelector('[data-action="plus"]').addEventListener('click', () => changeQty(line.id, 1));
+      row.querySelector('[data-action="minus"]').addEventListener('click', () => changeQty(line.id, -1, line.note || ''));
+      row.querySelector('[data-action="plus"]').addEventListener('click', () => changeQty(line.id, 1, line.note || ''));
+      row.querySelector('.item-note').addEventListener('input', (event) => updateItemNote(line.id, line.note || '', event.target.value));
       return row;
     }));
     $('cartEmpty').style.display = cart.length ? 'none' : 'block';
@@ -123,15 +139,28 @@ const TablePulseOrder = (() => {
     $('sendOrderBtn').disabled = cart.length === 0;
   }
 
-  function changeQty(id, delta) {
-    cart = cart.map((line) => line.id === id ? { ...line, qty: line.qty + delta } : line).filter((line) => line.qty > 0);
+  function findLine(id, note) {
+    return cart.find((line) => line.id === id && (line.note || '') === note);
+  }
+
+  function changeQty(id, delta, note = '') {
+    const line = findLine(id, note);
+    if (!line) return;
+    line.qty += delta;
+    cart = cart.filter((item) => item.qty > 0);
     saveCart();
     renderCart();
   }
 
-  async function sendOrder() {
-    if (!cart.length) return;
-    const order = {
+  function updateItemNote(id, previousNote, nextNote) {
+    const line = findLine(id, previousNote);
+    if (!line) return;
+    line.note = nextNote.trimStart();
+    saveCart();
+  }
+
+  function buildOrder() {
+    return {
       id: uid(),
       table: tableNumber(),
       note: $('orderNote').value.trim(),
@@ -140,43 +169,72 @@ const TablePulseOrder = (() => {
         name: line.name,
         price: Number(line.price || 0),
         qty: line.qty,
+        note: (line.note || '').trim(),
         dotyposProductId: line.dotyposProductId || null
       })),
       total: cart.reduce((sum, line) => sum + Number(line.price || 0) * line.qty, 0),
       status: 'new',
       createdAt: new Date().toISOString()
     };
+  }
 
+  async function sendOrder() {
+    if (!cart.length) return;
+    const order = buildOrder();
     const button = $('sendOrderBtn');
     button.disabled = true;
     button.textContent = 'Sending…';
+    setNotice('', '');
 
-    let online = false;
     try {
       const result = await json(ORDER_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(order)
       });
-      online = Boolean(result.ok);
-    } catch {
-      const orders = loadLocalOrders();
-      localStorage.setItem(ORDER_KEY, JSON.stringify([order, ...orders]));
+      lastOrder = result.order || order;
+      showConfirmation(result.mode || 'sent', true);
+    } catch (error) {
+      saveLocalOrder(order);
+      lastOrder = order;
+      showConfirmation('local-demo', false, error.message);
+    } finally {
+      cart = [];
+      saveCart();
+      $('orderNote').value = '';
+      renderCart();
+      button.textContent = 'Send order';
+      button.disabled = false;
     }
-
-    cart = [];
-    saveCart();
-    $('orderNote').value = '';
-    renderCart();
-    $('orderNotice').textContent = online ? 'Order sent to restaurant system.' : 'Order saved in demo mode for dashboard.';
-    $('orderNotice').className = 'notice ok';
-    button.textContent = 'Send order';
-    button.disabled = false;
   }
 
-  function loadLocalOrders() {
-    try { return JSON.parse(localStorage.getItem(ORDER_KEY) || '[]'); }
-    catch { return []; }
+  function showConfirmation(mode, online, error = '') {
+    const panel = $('confirmationPanel');
+    const title = $('confirmationTitle');
+    const detail = $('confirmationDetail');
+    const modeText = {
+      live: 'Order sent to Dotykačka.',
+      'dry-run': 'Dry-run order prepared successfully.',
+      queued_missing_credentials: 'Order queued until Dotykačka credentials are configured.',
+      queued_send_failed: 'Order saved because Dotykačka sending failed.',
+      'local-demo': 'Order saved in this browser demo.'
+    }[mode] || 'Order received.';
+
+    title.textContent = 'Thank you — order received';
+    detail.textContent = `${modeText} Reference: ${shortId(lastOrder?.id || '')}${error ? ` (${error})` : ''}`;
+    panel.hidden = false;
+    panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    setNotice(online ? 'Order received.' : 'Saved locally for demo/testing.', online ? 'ok' : 'error');
+  }
+
+  function shortId(id) {
+    return String(id || '').slice(0, 8).toUpperCase() || 'N/A';
+  }
+
+  function setNotice(text, kind = 'ok') {
+    const notice = $('orderNotice');
+    notice.textContent = text;
+    notice.className = `notice ${kind}`;
   }
 
   function escapeHtml(value) {
@@ -193,7 +251,13 @@ const TablePulseOrder = (() => {
     renderMenu();
     renderCart();
     $('sendOrderBtn').addEventListener('click', sendOrder);
+    $('newOrderBtn').addEventListener('click', () => {
+      $('confirmationPanel').hidden = true;
+      setNotice('', '');
+    });
   }
 
-  return { init };
+  return { init, _private: { buildOrder, normalizeMenu } };
 })();
+
+if (typeof module !== 'undefined') module.exports = TablePulseOrder;

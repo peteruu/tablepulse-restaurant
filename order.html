@@ -43,7 +43,14 @@
       </div>
       <button id="sendOrderBtn" class="primary" type="button">Send order</button>
       <p id="orderNotice" class="notice" role="status"></p>
-      <a class="dashboard-link" href="dashboard.html">Staff dashboard</a>
+
+      <section id="confirmationPanel" class="confirmation-panel" hidden>
+        <h3 id="confirmationTitle">Thank you — order received</h3>
+        <p id="confirmationDetail"></p>
+        <button id="newOrderBtn" class="secondary" type="button">Start another order</button>
+      </section>
+
+      <p class="muted small-print">Payment stays with the waiter. This page only sends the order to the restaurant.</p>
     </aside>
   </main>
 
