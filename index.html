@@ -38,10 +38,14 @@
     </form>
 
     <p id="notice" class="notice" role="status"></p>
+    <a class="dashboard-link" id="orderLink" href="order.html">Order from table</a>
     <a class="dashboard-link" href="dashboard.html">Staff dashboard</a>
   </main>
 
   <script src="app.js"></script>
-  <script>TablePulse.initGuest();</script>
+  <script>
+    TablePulse.initGuest();
+    document.getElementById('orderLink').href = `order.html${window.location.search || '?t=1'}`;
+  </script>
 </body>
 </html>
