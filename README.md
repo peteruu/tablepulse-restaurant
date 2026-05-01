@@ -1,13 +1,13 @@
-# TablePulse Restaurant
+# U Marienky QR objednávka
 
-A tiny PHP + JavaScript app for restaurants: guests scan a QR/table link, send quick service requests or feedback, order from a selected menu, and staff can manage everything from a lightweight dashboard.
+A lightweight PHP + JavaScript ordering module prepared for `restauraciaumarienky.sk`: guests scan a QR/table link, order from selected menu categories, and the backend sends the order into Dotykačka open accounts via POS Actions.
 
-It is intentionally simple: no database, no build step, no framework. It works as a static local demo using `localStorage`, and automatically syncs to the PHP JSON backend when hosted with PHP. It also includes a Dotykačka/Dotypos API connector skeleton for menu sync and future live POS order posting.
+It is intentionally simple: no database, no build step, no framework. It works as a static local demo using `localStorage`, and syncs to a PHP JSON backend when hosted with PHP. The backend is prepared for Dotykačka/Dotypos API menu sync and live POS order posting.
 
 ## What it does
 
-- Guest page for table-specific requests: service, payment, cleaning, order issue, feedback.
-- QR order page where the guest selects menu items for their mapped table, including per-item notes.
+- QR order page for U Marienky where the guest selects menu items for their mapped table, including per-item notes.
+- Optional guest page for table-specific requests: service, payment, cleaning, order issue, feedback.
 - Lightweight request dashboard for non-order requests/feedback only.
 - Printable QR generator for table links.
 - PHP API storing tickets/orders in JSON files.
@@ -84,12 +84,25 @@ config.example.php      Dotykačka credentials/table/category config template
 DOTYPOS.md              Backend integration notes
 ```
 
+## restauraciaumarienky.sk integration target
+
+Recommended deployment shape later:
+
+```text
+https://restauraciaumarienky.sk/order/?t=7
+https://restauraciaumarienky.sk/order/config.php
+https://restauraciaumarienky.sk/order/qr.html
+```
+
+The QR generator defaults GitHub Pages preview cards to the final `https://restauraciaumarienky.sk/order/` base URL so printed codes can already be prepared for the restaurant domain.
+
 ## GitHub Pages demo
 
 Static demo is available after GitHub Pages deploys:
 
 ```text
 https://peteruu.github.io/tablepulse-restaurant/order.html?t=7
+https://peteruu.github.io/tablepulse-restaurant/qr.html
 ```
 
 Because GitHub Pages cannot run PHP, it uses `menu.sample.json` and browser storage. A PHP host is needed for real Dotykačka integration.
@@ -151,4 +164,4 @@ POST /v2/clouds/:cloudId/branches/:branchId/pos-actions
 
 ## Why this app
 
-This is a practical weekend-sized restaurant tool: small enough to actually ship, useful enough for real testing, and easy to extend into a Symfony/MySQL version later.
+This is a practical U Marienky QR-ordering module: small enough to deploy on ordinary PHP hosting, useful enough for real table testing, and easy to evolve into a Symfony/MySQL version later if needed.

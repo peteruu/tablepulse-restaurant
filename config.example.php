@@ -9,6 +9,10 @@ return [
     ],
 
     'app' => [
+        'name' => getenv('TABLEPULSE_APP_NAME') ?: 'U Marienky QR objednávka',
+        'restaurant_name' => getenv('TABLEPULSE_RESTAURANT_NAME') ?: 'U Marienky',
+        'restaurant_url' => getenv('TABLEPULSE_RESTAURANT_URL') ?: 'https://restauraciaumarienky.sk',
+        'order_base_path' => getenv('TABLEPULSE_ORDER_BASE_PATH') ?: '/order/',
         'currency' => getenv('TABLEPULSE_CURRENCY') ?: 'EUR',
         'timezone' => getenv('TABLEPULSE_TIMEZONE') ?: 'Europe/Bratislava',
     ],

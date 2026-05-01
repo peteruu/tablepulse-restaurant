@@ -88,7 +88,7 @@ final class DotyposClient
         $table = (string) ($order['table'] ?? '');
         $mappedTable = $tableMap[$table]['dotypos_table_id'] ?? null;
         $noteParts = array_filter([
-            'TablePulse QR order',
+            'U Marienky QR objednávka',
             $table !== '' ? 'QR table: ' . $table : null,
             (string) ($order['note'] ?? ''),
         ]);

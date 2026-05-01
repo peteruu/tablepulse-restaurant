@@ -34,12 +34,12 @@ const TablePulseOrder = (() => {
   async function loadMenu() {
     try {
       const data = await json(MENU_URL);
-      $('menuState').textContent = data.source === 'dotypos' ? 'Dotykačka menu' : 'configured menu';
+      $('menuState').textContent = data.source === 'dotypos' ? 'Menu z Dotykačky' : 'Demo menu';
       $('menuState').className = data.source === 'dotypos' ? 'pill online' : 'pill';
       return normalizeMenu(data);
     } catch {
       const data = await json(SAMPLE_MENU_URL);
-      $('menuState').textContent = 'demo menu';
+      $('menuState').textContent = 'Demo menu';
       $('menuState').className = 'pill';
       return normalizeMenu(data);
     }
@@ -121,7 +121,7 @@ const TablePulseOrder = (() => {
           <span>${money(line.price)} × ${line.qty}</span>
           <label class="item-note-label">
             Item note
-            <input class="item-note" value="${escapeHtml(line.note || '')}" placeholder="e.g. no onion" maxlength="160">
+            <input class="item-note" value="${escapeHtml(line.note || '')}" placeholder="napr. bez cibule" maxlength="160">
           </label>
         </div>
         <div class="qty-controls">
@@ -183,7 +183,7 @@ const TablePulseOrder = (() => {
     const order = buildOrder();
     const button = $('sendOrderBtn');
     button.disabled = true;
-    button.textContent = 'Sending…';
+    button.textContent = 'Odosielam…';
     setNotice('', '');
 
     try {
@@ -213,18 +213,18 @@ const TablePulseOrder = (() => {
     const title = $('confirmationTitle');
     const detail = $('confirmationDetail');
     const modeText = {
-      live: 'Order sent to Dotykačka.',
-      'dry-run': 'Dry-run order prepared successfully.',
-      queued_missing_credentials: 'Order queued until Dotykačka credentials are configured.',
-      queued_send_failed: 'Order saved because Dotykačka sending failed.',
-      'local-demo': 'Order saved in this browser demo.'
-    }[mode] || 'Order received.';
+      live: 'Objednávka bola odoslaná do Dotykačky.',
+      'dry-run': 'Testovacia objednávka bola pripravená.',
+      queued_missing_credentials: 'Objednávka je uložená, kým doplníme prístupy do Dotykačky.',
+      queued_send_failed: 'Objednávka je uložená, odoslanie do Dotykačky zlyhalo.',
+      'local-demo': 'Objednávka je uložená v demo režime prehliadača.'
+    }[mode] || 'Objednávka prijatá.';
 
-    title.textContent = 'Thank you — order received';
-    detail.textContent = `${modeText} Reference: ${shortId(lastOrder?.id || '')}${error ? ` (${error})` : ''}`;
+    title.textContent = 'Ďakujeme — objednávka prijatá';
+    detail.textContent = `${modeText} Referencia: ${shortId(lastOrder?.id || '')}${error ? ` (${error})` : ''}`;
     panel.hidden = false;
     panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    setNotice(online ? 'Order received.' : 'Saved locally for demo/testing.', online ? 'ok' : 'error');
+    setNotice(online ? 'Objednávka prijatá.' : 'Uložené lokálne pre demo/test.', online ? 'ok' : 'error');
   }
 
   function shortId(id) {

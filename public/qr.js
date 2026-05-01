@@ -14,15 +14,18 @@ const TablePulseQr = (() => {
     try {
       const data = await json(TABLES_URL);
       mappedTables = data.mappedTables || {};
-      setNotice(`Loaded ${Object.keys(mappedTables).length} mapped tables.`, 'ok');
+      setNotice(`Načítané mapovanie stolov: ${Object.keys(mappedTables).length}.`, 'ok');
     } catch (error) {
-      mappedTables = { 1: { name: 'Table 1' }, 2: { name: 'Table 2' }, 7: { name: 'Table 7' } };
-      setNotice(`Using demo tables. ${error.message}`, 'error');
+      mappedTables = { 1: { name: 'Stôl 1' }, 2: { name: 'Stôl 2' }, 7: { name: 'Stôl 7' } };
+      setNotice(`Používam demo stoly. ${error.message}`, 'error');
     }
     renderQrCodes();
   }
 
   function defaultBaseUrl() {
+    if (window.location.hostname.includes('github.io')) {
+      return 'https://restauraciaumarienky.sk/order/';
+    }
     const url = new URL('order.html', window.location.href);
     url.search = '';
     return url.href;
@@ -35,7 +38,7 @@ const TablePulseQr = (() => {
   }
 
   function renderQrCodes() {
-    const subtitle = $('qrSubtitle').value || 'Scan to order from your table';
+    const subtitle = $('qrSubtitle').value || 'Naskenujte a objednajte si od stola';
     const tables = Object.entries(mappedTables).sort(([a], [b]) => String(a).localeCompare(String(b), undefined, { numeric: true }));
     $('qrSheet').replaceChildren(...tables.map(([qrTable, table]) => qrCard(qrTable, table, subtitle)));
   }
@@ -48,11 +51,11 @@ const TablePulseQr = (() => {
     qr.addData(url);
     qr.make();
     card.innerHTML = `
-      <div class="qr-brand">TablePulse</div>
-      <h2>${escapeHtml(table.name || `Table ${qrTable}`)}</h2>
+      <div class="qr-brand">U Marienky</div>
+      <h2>${escapeHtml(table.name || `Stôl ${qrTable}`)}</h2>
       <p>${escapeHtml(subtitle)}</p>
       <div class="qr-code">${qr.createSvgTag({ cellSize: 5, margin: 2 })}</div>
-      <strong>Table ${escapeHtml(qrTable)}</strong>
+      <strong>Stôl ${escapeHtml(qrTable)}</strong>
       <small>${escapeHtml(url)}</small>
     `;
     return card;

@@ -3,15 +3,15 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>TablePulse · QR generator</title>
+  <title>U Marienky · QR generátor</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <header class="topbar no-print">
     <div>
-      <div class="eyebrow">TablePulse QR</div>
-      <h1>Table QR codes</h1>
-      <p class="muted">Generate printable QR cards for each restaurant table.</p>
+      <div class="eyebrow">U Marienky</div>
+      <h1>QR kódy na stoly</h1>
+      <p class="muted">Vygenerujte tlačiteľné QR kartičky pre objednávanie od stola.</p>
     </div>
     <div class="actions">
       <a class="secondary button-link" href="config.php">Config</a>
@@ -22,17 +22,17 @@
 
   <main class="qr-layout">
     <section class="panel no-print">
-      <h2>QR settings</h2>
+      <h2>Nastavenia QR</h2>
       <label>
-        Base order URL
+        Základná URL objednávky
         <input id="baseUrl" placeholder="https://example.com/order.html">
       </label>
-      <p class="muted small-print">The table number will be added as <code>?t=7</code>. Use the final deployment URL before printing.</p>
+      <p class="muted small-print">Číslo stola sa pridá ako <code>?t=7</code>. Pred tlačou použite finálnu URL na restauraciaumarienky.sk.</p>
       <label>
-        Card subtitle
-        <input id="qrSubtitle" value="Scan to order from your table">
+        Text na kartičke
+        <input id="qrSubtitle" value="Naskenujte a objednajte si od stola">
       </label>
-      <button id="generateQrBtn" class="secondary" type="button">Regenerate</button>
+      <button id="generateQrBtn" class="secondary" type="button">Pregenerovať</button>
       <p id="qrNotice" class="notice" role="status"></p>
     </section>
 

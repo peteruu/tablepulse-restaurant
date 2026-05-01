@@ -1,6 +1,6 @@
-# Dotykačka / Dotypos backend integration
+# U Marienky Dotykačka / Dotypos backend integration
 
-This backend is prepared for QR table ordering in a restaurant using Dotykačka.
+This backend is prepared for QR table ordering on `restauraciaumarienky.sk` using Dotykačka.
 
 ## What is implemented
 
@@ -29,16 +29,16 @@ Payload shape used by this app:
 ```json
 {
   "action": "order/create",
-  "external-id": "tablepulse-order-id",
+  "external-id": "umarienky-order-id",
   "table-id": 123456789,
   "user-id": 123456789,
-  "note": "TablePulse QR order | QR table: 7 | guest note",
+  "note": "U Marienky QR objednávka | QR table: 7 | guest note",
   "items": [
     { "id": 987654321, "qty": 2, "manual-price": 4.9 }
   ],
   "lock": false,
   "validity": 1777635000,
-  "idempotency-key": "tablepulse-order-id"
+  "idempotency-key": "umarienky-order-id"
 }
 ```
 
