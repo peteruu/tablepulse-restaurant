@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TablePulse · Configuration</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <div class="eyebrow">TablePulse Config</div>
+      <h1>QR → Dotykačka setup</h1>
+      <p class="muted">Prepare table mapping and visible menu categories before live credentials are added.</p>
+    </div>
+    <div class="actions">
+      <button id="refreshConfigBtn" class="secondary">Refresh</button>
+      <a class="secondary button-link" href="order.html?t=7">Test order page</a>
+    </div>
+  </header>
+
+  <main class="config-layout">
+    <section class="panel">
+      <div class="section-head">
+        <h2>Backend status</h2>
+        <span id="configHealthPill" class="pill">loading</span>
+      </div>
+      <dl id="healthList" class="health-list"></dl>
+    </section>
+
+    <section class="panel">
+      <h2>Order mode</h2>
+      <p class="muted">Keep dry-run until a single real test in Dotykačka is ready.</p>
+      <label>
+        Mode
+        <select id="orderMode">
+          <option value="dry-run">dry-run</option>
+          <option value="live">live</option>
+        </select>
+      </label>
+    </section>
+
+    <section class="panel wide-panel">
+      <div class="section-head">
+        <h2>Visible categories</h2>
+        <span id="categorySource" class="pill">demo</span>
+      </div>
+      <p class="muted">Only selected categories should appear on the guest QR menu. Empty selection means all categories.</p>
+      <div id="categoryChecklist" class="check-grid"></div>
+    </section>
+
+    <section class="panel wide-panel">
+      <div class="section-head">
+        <h2>Table mapping</h2>
+        <button id="addTableBtn" class="secondary" type="button">Add table</button>
+      </div>
+      <p class="muted">QR table number is what appears in the URL, Dotykačka table ID is the target open account/table.</p>
+      <div id="tableRows" class="table-map-list"></div>
+    </section>
+
+    <section class="panel wide-panel">
+      <button id="saveConfigBtn" class="primary" type="button">Save config</button>
+      <p id="configNotice" class="notice" role="status"></p>
+    </section>
+  </main>
+
+  <script src="config.js"></script>
+  <script>TablePulseConfig.init();</script>
+</body>
+</html>

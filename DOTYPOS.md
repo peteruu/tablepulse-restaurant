@@ -64,6 +64,8 @@ Never commit real values.
 
 ```text
 GET  /api/health.php
+GET  /api/settings.php
+POST /api/settings.php
 GET  /api/menu.php?refresh=1
 GET  /api/tables.php?refresh=1
 POST /api/tables.php
@@ -73,6 +75,10 @@ PATCH /api/orders.php?id=<order-id>
 GET  /api/pos-actions.php?table=7
 POST /api/pos-actions.php
 ```
+
+## Runtime setup helper
+
+Open `/config.html` on a PHP deployment to prepare visible categories, order mode, and QR table mapping without editing PHP files. Values are stored in `data/settings.json` and `data/table-map.json`.
 
 ## Table mapping
 

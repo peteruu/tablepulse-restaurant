@@ -42,6 +42,7 @@ Then visit:
 
 ```text
 http://localhost:8080/order.html?t=7
+http://localhost:8080/config.html
 http://localhost:8080/?t=7
 http://localhost:8080/dashboard.html
 ```
@@ -59,6 +60,7 @@ The repo includes `public/api/tickets.php` as a tiny proxy to the real API, so t
 ```text
 public/index.html       Guest/table request page
 public/order.html       QR table ordering page
+public/config.html      Setup helper for categories/table mapping/order mode
 public/dashboard.html   Optional request/feedback dashboard
 public/app.js           Request frontend logic
 public/order.js         Ordering frontend logic
@@ -67,6 +69,7 @@ public/styles.css       UI styles
 api/bootstrap.php       Shared config/storage/helpers
 api/tickets.php         JSON ticket API
 api/menu.php            Menu API with Dotykačka fallback/cache
+api/settings.php        Runtime category/order-mode settings
 api/tables.php          Dotykačka table sync + QR table mapping
 api/orders.php          Order API with durable fallback queue + POS Actions sending
 api/pos-actions.php     Low-level POS Actions proxy for tests

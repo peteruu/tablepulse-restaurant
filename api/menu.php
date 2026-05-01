@@ -68,6 +68,7 @@ function tp_normalize_menu(array $products, array $categories, array $visibleCat
 }
 
 $config = tp_config();
+$runtimeSettings = tp_read_json('settings.json', []);
 $client = tp_dotypos($config);
 $ttl = (int) ($config['dotypos']['cache_ttl_seconds'] ?? 900);
 $refresh = ($_GET['refresh'] ?? '') === '1';
@@ -82,7 +83,7 @@ if (!$refresh && ($cached = tp_cache_get('menu-cache.json', $ttl)) !== null) {
 }
 
 try {
-    $visibleCategoryIds = array_map('strval', $config['dotypos']['visible_category_ids'] ?? []);
+    $visibleCategoryIds = array_map('strval', $runtimeSettings['visibleCategoryIds'] ?? $config['dotypos']['visible_category_ids'] ?? []);
     $data = tp_normalize_menu($client->products(), $client->categories(), $visibleCategoryIds);
     $data['cache'] = 'fresh';
     tp_respond(tp_cache_set('menu-cache.json', $data));

@@ -119,7 +119,8 @@ if ($method !== 'POST') {
 
 $order = tp_validate_order(tp_body());
 $tableMap = tp_table_map($config);
-$mode = $client->orderMode();
+$runtimeSettings = tp_read_json('settings.json', []);
+$mode = (string) ($runtimeSettings['orderMode'] ?? $client->orderMode());
 
 try {
     $order['dotyposPayload'] = $client->createOrderAction($order, $tableMap);
