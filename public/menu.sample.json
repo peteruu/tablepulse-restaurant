@@ -1,0 +1,17 @@
+{
+  "categories": [
+    { "id": "drinks", "name": "Drinks", "visible": true },
+    { "id": "starters", "name": "Starters", "visible": true },
+    { "id": "mains", "name": "Main dishes", "visible": true },
+    { "id": "desserts", "name": "Desserts", "visible": true }
+  ],
+  "items": [
+    { "id": "water", "categoryId": "drinks", "name": "Sparkling water", "description": "0.75 l bottle", "price": 3.2, "dotyposProductId": null },
+    { "id": "cola", "categoryId": "drinks", "name": "Cola", "description": "0.33 l", "price": 2.9, "dotyposProductId": null },
+    { "id": "bruschetta", "categoryId": "starters", "name": "Tomato bruschetta", "description": "Garlic, basil, olive oil", "price": 5.9, "dotyposProductId": null },
+    { "id": "soup", "categoryId": "starters", "name": "Soup of the day", "description": "Ask staff for allergens", "price": 4.5, "dotyposProductId": null },
+    { "id": "burger", "categoryId": "mains", "name": "House burger", "description": "Beef, cheddar, fries", "price": 12.9, "dotyposProductId": null },
+    { "id": "pasta", "categoryId": "mains", "name": "Pasta pomodoro", "description": "Tomato sauce, parmesan", "price": 10.5, "dotyposProductId": null },
+    { "id": "cheesecake", "categoryId": "desserts", "name": "Cheesecake", "description": "Berry sauce", "price": 4.9, "dotyposProductId": null }
+  ]
+}

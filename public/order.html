@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TablePulse · Table order</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="order-shell">
+  <header class="order-hero">
+    <div>
+      <div class="eyebrow">TablePulse Order</div>
+      <h1>Order from your table</h1>
+      <p class="muted">Choose items, send them to staff/kitchen, pay later with the waiter.</p>
+    </div>
+    <section class="table-banner compact">
+      <span>Table</span>
+      <strong id="orderTableNumber">—</strong>
+    </section>
+  </header>
+
+  <main class="order-layout">
+    <section class="panel menu-panel">
+      <div class="section-head">
+        <h2>Menu</h2>
+        <span id="menuState" class="pill">demo menu</span>
+      </div>
+      <div id="categoryTabs" class="category-tabs"></div>
+      <div id="menuList" class="menu-list"></div>
+    </section>
+
+    <aside class="panel cart-panel">
+      <h2>Your order</h2>
+      <div id="cartList" class="cart-list"></div>
+      <p id="cartEmpty" class="empty small">Cart is empty.</p>
+      <label>
+        Note for kitchen / waiter
+        <textarea id="orderNote" rows="3" placeholder="No onion, extra spicy, etc."></textarea>
+      </label>
+      <div class="cart-total">
+        <span>Total</span>
+        <strong id="cartTotal">0.00 €</strong>
+      </div>
+      <button id="sendOrderBtn" class="primary" type="button">Send order</button>
+      <p id="orderNotice" class="notice" role="status"></p>
+      <a class="dashboard-link" href="dashboard.html">Staff dashboard</a>
+    </aside>
+  </main>
+
+  <script src="order.js"></script>
+  <script>TablePulseOrder.init();</script>
+</body>
+</html>
