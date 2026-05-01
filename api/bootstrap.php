@@ -32,6 +32,51 @@ function tp_respond(array $payload, int $status = 200): void
     exit;
 }
 
+function tp_auth_config(array $config): array
+{
+    return $config['auth'] ?? [
+        'enabled' => false,
+        'username' => '',
+        'password_hash' => '',
+    ];
+}
+
+function tp_is_authenticated(array $config): bool
+{
+    $auth = tp_auth_config($config);
+    if (!($auth['enabled'] ?? false)) {
+        return true;
+    }
+
+    $username = $_SERVER['PHP_AUTH_USER'] ?? '';
+    $password = $_SERVER['PHP_AUTH_PW'] ?? '';
+
+    return hash_equals((string) ($auth['username'] ?? ''), $username)
+        && password_verify($password, (string) ($auth['password_hash'] ?? ''));
+}
+
+function tp_require_auth(array $config): void
+{
+    if (tp_is_authenticated($config)) {
+        return;
+    }
+
+    header('WWW-Authenticate: Basic realm="TablePulse Admin"');
+    tp_respond(['error' => 'Authentication required'], 401);
+}
+
+function tp_require_page_auth(array $config): void
+{
+    if (tp_is_authenticated($config)) {
+        return;
+    }
+
+    header('WWW-Authenticate: Basic realm="TablePulse Admin"');
+    http_response_code(401);
+    echo 'Authentication required';
+    exit;
+}
+
 function tp_body(): array
 {
     $decoded = json_decode(file_get_contents('php://input') ?: '{}', true);

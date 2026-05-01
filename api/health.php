@@ -12,6 +12,11 @@ $result = [
     'ok' => true,
     'php' => PHP_VERSION,
     'curl' => function_exists('curl_init'),
+    'auth' => [
+        'enabled' => (bool) (tp_auth_config($config)['enabled'] ?? false),
+        'usernameSet' => (tp_auth_config($config)['username'] ?? '') !== '',
+        'passwordHashSet' => (tp_auth_config($config)['password_hash'] ?? '') !== '',
+    ],
     'dotypos' => [
         'configured' => $client->configured(),
         'canSendPosActions' => $client->canSendPosActions(),

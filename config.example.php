@@ -1,6 +1,13 @@
 <?php
 
 return [
+    'auth' => [
+        'enabled' => (bool) (getenv('TABLEPULSE_AUTH_ENABLED') ?: false),
+        'username' => getenv('TABLEPULSE_ADMIN_USER') ?: '',
+        // Generate with: php -r "echo password_hash('your-password', PASSWORD_DEFAULT), PHP_EOL;"
+        'password_hash' => getenv('TABLEPULSE_ADMIN_PASSWORD_HASH') ?: '',
+    ],
+
     'app' => [
         'currency' => getenv('TABLEPULSE_CURRENCY') ?: 'EUR',
         'timezone' => getenv('TABLEPULSE_TIMEZONE') ?: 'Europe/Bratislava',

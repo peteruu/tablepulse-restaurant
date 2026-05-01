@@ -42,7 +42,7 @@ Then visit:
 
 ```text
 http://localhost:8080/order.html?t=7
-http://localhost:8080/config.html
+http://localhost:8080/config.php
 http://localhost:8080/?t=7
 http://localhost:8080/dashboard.html
 ```
@@ -60,7 +60,8 @@ The repo includes `public/api/tickets.php` as a tiny proxy to the real API, so t
 ```text
 public/index.html       Guest/table request page
 public/order.html       QR table ordering page
-public/config.html      Setup helper for categories/table mapping/order mode
+public/config.php       Protected setup helper entry point
+public/config.html      Setup helper UI for categories/table mapping/order mode
 public/dashboard.html   Optional request/feedback dashboard
 public/app.js           Request frontend logic
 public/order.js         Ordering frontend logic
@@ -106,7 +107,19 @@ DOTYPOS_VISIBLE_CATEGORY_IDS=123,456
 DOTYPOS_ORDER_MODE=dry-run
 ```
 
-For shared hosting, copy `config.example.php` to `config.php`, fill only server-side values, and never commit it.
+For shared hosting, copy `config.example.php` to `config.php`, fill only server-side values, enable auth, and never commit it.
+
+Admin auth example:
+
+```php
+$config['auth'] = [
+    'enabled' => true,
+    'username' => 'admin-name',
+    'password_hash' => password_hash('change-me', PASSWORD_DEFAULT),
+];
+```
+
+Use `/config.php` for the protected setup page. `/config.html` is only the static UI shell.
 
 Order posting is intentionally in safe `dry-run` mode by default. Switching `DOTYPOS_ORDER_MODE=live` sends `order/create` through:
 

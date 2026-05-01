@@ -7,6 +7,7 @@ require __DIR__ . DIRECTORY_SEPARATOR . 'dotypos.php';
 tp_cors(['GET', 'POST', 'OPTIONS']);
 
 $config = tp_config();
+tp_require_auth($config);
 $client = tp_dotypos($config);
 
 if (!$client->canSendPosActions()) {

@@ -1,5 +1,5 @@
 data/*.json
 !data/tickets.json
-config.php
+/config.php
 .DS_Store
 node_modules/

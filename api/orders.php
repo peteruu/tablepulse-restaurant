@@ -79,6 +79,7 @@ $config = tp_config();
 $client = tp_dotypos($config);
 
 if ($method === 'GET') {
+    tp_require_auth($config);
     $orders = tp_orders();
     if (($_GET['status'] ?? '') !== '') {
         $status = (string) $_GET['status'];
@@ -88,6 +89,7 @@ if ($method === 'GET') {
 }
 
 if ($method === 'PATCH') {
+    tp_require_auth($config);
     $id = tp_clean_string($_GET['id'] ?? '', 120);
     $body = tp_body();
     $orders = tp_orders();

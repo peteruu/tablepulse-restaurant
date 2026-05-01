@@ -78,7 +78,9 @@ POST /api/pos-actions.php
 
 ## Runtime setup helper
 
-Open `/config.html` on a PHP deployment to prepare visible categories, order mode, and QR table mapping without editing PHP files. Values are stored in `data/settings.json` and `data/table-map.json`.
+Open `/config.php` on a PHP deployment to prepare visible categories, order mode, and QR table mapping without editing PHP files. Values are stored in `data/settings.json` and `data/table-map.json`.
+
+Protect admin endpoints by enabling `auth` in local `config.php` (ignored by git). Do not commit real credentials.
 
 ## Table mapping
 
