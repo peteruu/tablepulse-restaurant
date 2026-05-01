@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TablePulse · QR generator</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar no-print">
+    <div>
+      <div class="eyebrow">TablePulse QR</div>
+      <h1>Table QR codes</h1>
+      <p class="muted">Generate printable QR cards for each restaurant table.</p>
+    </div>
+    <div class="actions">
+      <a class="secondary button-link" href="config.php">Config</a>
+      <button id="refreshQrBtn" class="secondary">Refresh</button>
+      <button id="printQrBtn" class="primary print-button">Print</button>
+    </div>
+  </header>
+
+  <main class="qr-layout">
+    <section class="panel no-print">
+      <h2>QR settings</h2>
+      <label>
+        Base order URL
+        <input id="baseUrl" placeholder="https://example.com/order.html">
+      </label>
+      <p class="muted small-print">The table number will be added as <code>?t=7</code>. Use the final deployment URL before printing.</p>
+      <label>
+        Card subtitle
+        <input id="qrSubtitle" value="Scan to order from your table">
+      </label>
+      <button id="generateQrBtn" class="secondary" type="button">Regenerate</button>
+      <p id="qrNotice" class="notice" role="status"></p>
+    </section>
+
+    <section class="qr-print-sheet" id="qrSheet" aria-live="polite"></section>
+  </main>
+
+  <script src="assets/vendor/qrcode-generator.js"></script>
+  <script src="qr.js"></script>
+  <script>TablePulseQr.init();</script>
+</body>
+</html>

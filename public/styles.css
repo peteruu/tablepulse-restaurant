@@ -144,8 +144,26 @@ button:hover { transform: translateY(-1px); filter: brightness(.98); }
 .check-card small { grid-column: 2; color: var(--muted); font-weight: 500; }
 .table-map-list { display: grid; gap: 12px; margin-top: 16px; }
 .table-map-row { display: grid; grid-template-columns: 120px 1fr 220px auto; gap: 10px; align-items: end; padding: 12px; border: 1px solid var(--line); border-radius: 16px; background: #f8fafc; }
+.qr-layout { display: grid; grid-template-columns: 340px 1fr; gap: 20px; padding: 24px; max-width: 1240px; margin: 0 auto; }
+.qr-print-sheet { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; }
+.qr-card { background: #fff; border: 1px solid var(--line); border-radius: 24px; padding: 22px; text-align: center; box-shadow: 0 12px 30px rgba(15, 23, 42, .08); page-break-inside: avoid; }
+.qr-brand { color: var(--brand); font-size: .75rem; font-weight: 900; letter-spacing: .16em; text-transform: uppercase; }
+.qr-card h2 { font-size: 1.8rem; margin: 8px 0; }
+.qr-card p { color: var(--muted); margin: 0 0 16px; }
+.qr-code { display: grid; place-items: center; margin: 12px auto; }
+.qr-code svg { width: 190px; height: 190px; }
+.qr-card strong { display: block; font-size: 1.2rem; margin-top: 10px; }
+.qr-card small { display: block; color: var(--muted); margin-top: 10px; word-break: break-all; font-size: .72rem; }
+.print-button { width: auto; }
+@media print {
+  body { background: #fff; }
+  .no-print { display: none !important; }
+  .qr-layout { display: block; padding: 0; margin: 0; max-width: none; }
+  .qr-print-sheet { grid-template-columns: repeat(2, 1fr); gap: 12mm; }
+  .qr-card { box-shadow: none; border: 1px solid #111; border-radius: 8mm; padding: 10mm; }
+}
 @media (max-width: 820px) {
-  .topbar, .dashboard-grid, .order-hero, .order-layout, .config-layout { display: block; }
+  .topbar, .dashboard-grid, .order-hero, .order-layout, .config-layout, .qr-layout { display: block; }
   .panel { margin: 16px; }
   .topbar .actions { margin-top: 16px; }
   .ticket { grid-template-columns: 1fr; }

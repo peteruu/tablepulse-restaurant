@@ -9,7 +9,7 @@ It is intentionally simple: no database, no build step, no framework. It works a
 - Guest page for table-specific requests: service, payment, cleaning, order issue, feedback.
 - QR order page where the guest selects menu items for their mapped table, including per-item notes.
 - Lightweight request dashboard for non-order requests/feedback only.
-- QR/link generator for table numbers.
+- Printable QR generator for table links.
 - PHP API storing tickets/orders in JSON files.
 - Dotykačka/Dotypos API v2 connector skeleton for products/categories and table mapping.
 - Offline/demo fallback via browser `localStorage`.
@@ -43,6 +43,7 @@ Then visit:
 ```text
 http://localhost:8080/order.html?t=7
 http://localhost:8080/config.php
+http://localhost:8080/qr.html
 http://localhost:8080/?t=7
 http://localhost:8080/dashboard.html
 ```
@@ -62,6 +63,7 @@ public/index.html       Guest/table request page
 public/order.html       QR table ordering page
 public/config.php       Protected setup helper entry point
 public/config.html      Setup helper UI for categories/table mapping/order mode
+public/qr.html          Printable QR code generator for table links
 public/dashboard.html   Optional request/feedback dashboard
 public/app.js           Request frontend logic
 public/order.js         Ordering frontend logic
