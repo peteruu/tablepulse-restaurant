@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TablePulse · Guest request</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="guest-shell">
+  <main class="card guest-card">
+    <div class="eyebrow">TablePulse</div>
+    <h1>Need something?</h1>
+    <p class="muted">Send a quick request to the staff. No app install needed.</p>
+
+    <section class="table-banner">
+      <span>Table</span>
+      <strong id="tableNumber">—</strong>
+    </section>
+
+    <form id="ticketForm" class="stack">
+      <label>
+        Request type
+        <select id="type" required>
+          <option value="service">Call waiter</option>
+          <option value="payment">Ask for bill</option>
+          <option value="cleaning">Clean table</option>
+          <option value="order_issue">Order issue</option>
+          <option value="feedback">Feedback</option>
+        </select>
+      </label>
+
+      <label>
+        Message <span class="optional">optional</span>
+        <textarea id="message" rows="4" placeholder="E.g. Can we get another water, please?"></textarea>
+      </label>
+
+      <button class="primary" type="submit">Send request</button>
+    </form>
+
+    <p id="notice" class="notice" role="status"></p>
+    <a class="dashboard-link" href="dashboard.html">Staff dashboard</a>
+  </main>
+
+  <script src="app.js"></script>
+  <script>TablePulse.initGuest();</script>
+</body>
+</html>
