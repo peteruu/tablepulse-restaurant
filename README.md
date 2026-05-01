@@ -8,7 +8,7 @@ It is intentionally simple: no database, no build step, no framework. It works a
 
 - Guest page for table-specific requests: service, payment, cleaning, order issue, feedback.
 - QR order page where the guest selects menu items for their mapped table.
-- Staff dashboard with live queue, status changes, filters, stats, and export.
+- Lightweight request dashboard for non-order requests/feedback only.
 - QR/link generator for table numbers.
 - PHP API storing tickets/orders in JSON files.
 - Dotykačka/Dotypos API v2 connector skeleton for products/categories and table mapping.
@@ -52,7 +52,7 @@ The repo includes `public/api/tickets.php` as a tiny proxy to the real API, so t
 ```text
 public/index.html       Guest/table request page
 public/order.html       QR table ordering page
-public/dashboard.html   Staff dashboard
+public/dashboard.html   Optional request/feedback dashboard
 public/app.js           Request frontend logic
 public/order.js         Ordering frontend logic
 public/menu.sample.json Demo menu for static hosting/GitHub Pages
@@ -61,7 +61,7 @@ api/bootstrap.php       Shared config/storage/helpers
 api/tickets.php         JSON ticket API
 api/menu.php            Menu API with Dotykačka fallback/cache
 api/tables.php          Dotykačka table sync + QR table mapping
-api/orders.php          Order API with durable local queue + POS Actions sending
+api/orders.php          Order API with durable fallback queue + POS Actions sending
 api/pos-actions.php     Low-level POS Actions proxy for tests
 api/health.php          Deployment/config health check
 api/dotypos.php         Dotykačka API client
