@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TablePulse · Staff dashboard</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <div class="eyebrow">TablePulse</div>
+      <h1>Restaurant request board</h1>
+    </div>
+    <div class="actions">
+      <button id="refreshBtn" class="secondary">Refresh</button>
+      <button id="exportBtn" class="secondary">Export JSON</button>
+    </div>
+  </header>
+
+  <main class="dashboard-grid">
+    <section class="panel stats-panel">
+      <h2>Today</h2>
+      <div class="stats">
+        <div><strong id="statOpen">0</strong><span>open</span></div>
+        <div><strong id="statDone">0</strong><span>done</span></div>
+        <div><strong id="statTotal">0</strong><span>total</span></div>
+      </div>
+      <label class="filter-label">
+        Filter
+        <select id="statusFilter">
+          <option value="all">All</option>
+          <option value="new">New</option>
+          <option value="doing">Doing</option>
+          <option value="done">Done</option>
+        </select>
+      </label>
+    </section>
+
+    <section class="panel qr-panel">
+      <h2>Table links</h2>
+      <p class="muted">Generate URLs to print as QR codes later.</p>
+      <form id="linkForm" class="inline-form">
+        <input id="tableInput" type="number" min="1" value="1" aria-label="Table number">
+        <button class="secondary" type="submit">Generate</button>
+      </form>
+      <code id="tableLink" class="link-box"></code>
+    </section>
+
+    <section class="panel queue-panel">
+      <div class="section-head">
+        <h2>Queue</h2>
+        <span id="syncState" class="pill">local demo</span>
+      </div>
+      <div id="ticketList" class="ticket-list"></div>
+      <p id="emptyState" class="empty">No tickets yet. Try creating one from the guest page.</p>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+  <script>TablePulse.initDashboard();</script>
+</body>
+</html>

@@ -1,0 +1,4 @@
+data/*.json
+!data/tickets.json
+.DS_Store
+node_modules/
