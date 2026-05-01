@@ -57,13 +57,18 @@ public/app.js           Request frontend logic
 public/order.js         Ordering frontend logic
 public/menu.sample.json Demo menu for static hosting/GitHub Pages
 public/styles.css       UI styles
+api/bootstrap.php       Shared config/storage/helpers
 api/tickets.php         JSON ticket API
-api/menu.php            Menu API with Dotykačka fallback
-api/orders.php          Order API / safe Dotykačka dry-run
-api/dotypos.php         Dotykačka API client skeleton
+api/menu.php            Menu API with Dotykačka fallback/cache
+api/tables.php          Dotykačka table sync + QR table mapping
+api/orders.php          Order API with durable local queue + POS Actions sending
+api/pos-actions.php     Low-level POS Actions proxy for tests
+api/health.php          Deployment/config health check
+api/dotypos.php         Dotykačka API client
 public/api/*.php        Web-root proxies for PHP APIs
 data/tickets.json       Storage file
 config.example.php      Dotykačka credentials/table/category config template
+DOTYPOS.md              Backend integration notes
 ```
 
 ## GitHub Pages demo
@@ -78,19 +83,26 @@ Because GitHub Pages cannot run PHP, it uses `menu.sample.json` and browser stor
 
 ## Dotykačka setup notes
 
-Dotykačka API v2 needs a registered client app, `cloudId`, and refresh token. The app is prepared for environment variables:
+The backend is prepared for Dotykačka/Dotypos API v2 and POS Actions. See [`DOTYPOS.md`](DOTYPOS.md) for the full integration notes.
+
+Minimum server-side values later:
 
 ```bash
 DOTYPOS_CLOUD_ID=...
+DOTYPOS_BRANCH_ID=...
 DOTYPOS_REFRESH_TOKEN=...
+DOTYPOS_EMPLOYEE_ID=...
 DOTYPOS_VISIBLE_CATEGORY_IDS=123,456
+DOTYPOS_ORDER_MODE=dry-run
 ```
 
 For shared hosting, copy `config.example.php` to `config.php`, fill only server-side values, and never commit it.
 
-Table mapping is in `config.example.php` under `tables`: QR table number → Dotykačka table/location id.
+Order posting is intentionally in safe `dry-run` mode by default. Switching `DOTYPOS_ORDER_MODE=live` sends `order/create` through:
 
-Order posting is intentionally in safe `dry-run` mode until tested against the real restaurant license/POS endpoint, so it cannot accidentally create kitchen orders while we are still developing.
+```text
+POST /v2/clouds/:cloudId/branches/:branchId/pos-actions
+```
 
 ## API
 
